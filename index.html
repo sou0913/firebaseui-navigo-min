@@ -73,7 +73,7 @@
 
       const app = document.querySelector("#app");
 
-      const router = new Navigo('https://sou0913.github.io/firebaseui-navigo-min');
+      const router = new Navigo('https://sou0913.github.io/firebaseui-navigo-min', true, '#');
 
       firebase.auth().onAuthStateChanged((user) => {
             if (user) {
