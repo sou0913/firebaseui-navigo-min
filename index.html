@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebaseui Navigo Demo</title>
+
+    <script src="//unpkg.com/navigo@6"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.7.1/firebase-ui-auth__ja.js"></script>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/4.7.1/firebase-ui-auth.css"
+    />
+
+    <script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyCZItov1a-e9mDDhLceo2DqPnknON2WgLk",
+        authDomain: "benkyo-83021.firebaseapp.com",
+        databaseURL: "https://benkyo-83021.firebaseio.com",
+        projectId: "benkyo-83021",
+        storageBucket: "benkyo-83021.appspot.com",
+        messagingSenderId: "1076338876851",
+        appId: "1:1076338876851:web:a9eabc120cf2165c33ebc6",
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>FirebaseUI + Navigo Demo</h1>
+    </header>
+
+    <div id="app"></div>
+
+    <template id="mypage">
+      <h2>マイページ</h2>
+      <button id="logout">ログアウト</button>
+      <script>
+        document
+          .querySelector("#logout")
+          .addEventListener("click", function () {
+            firebase.auth().signOut();
+          });
+      </script>
+    </template>
+
+    <template id="login">
+      <div id="firebaseui-auth-container"></div>
+      <script>
+        const uiConfig = {
+          signInSuccessUrl: "/mypage",
+          signInOptions: [
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID,
+          ],
+          tosUrl: "./tos.html",
+          privacyPolicyUrl: "./privacyPolicy.html",
+        };
+        const ui = new firebaseui.auth.AuthUI(firebase.auth());
+        ui.start("#firebaseui-auth-container", uiConfig);
+      </script>
+    </template>
+
+    <script>
+      const replaceElement = function (parent, content) {
+        parent.innerHTML = "";
+        parent.append(content);
+      };
+
+      const app = document.querySelector("#app");
+
+      const router = new Navigo(null);
+
+      firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+              router.navigate("/mypage");
+            } else {
+              router.navigate("/login");
+            }
+          });
+
+      router
+        .on("/mypage", function () {
+          const template = document.querySelector("#mypage");
+          replaceElement(app, template.content);
+        })
+        .on("/login", function () {
+          const template = document.querySelector("#login");
+          replaceElement(app, template.content);
+        })
+        .resolve();
+    </script>
+  </body>
+</html>
